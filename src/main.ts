@@ -1,12 +1,14 @@
 import express from 'express';
+
+import config from './config'
 import loader from './loaders';
 
 async function startServer() {
     const app = express()
-    await loader(app, (app: express.Express, port: number) => {
-        app.listen(port, () => {
-            console.log(`Server started at port ${port}`)
-        })
+    await loader(app)
+    app.listen(process.env.PORT, () => {
+        // log something
+        console.log(`server starts on ${config.port}`)
     })
 }
 
