@@ -1,6 +1,6 @@
-import dbloader from './db'
+import dbLoader from './db'
 
 export default async (expressApp) => {
     // do something ...
-    let models = await dbloader()
+    let models = await dbLoader()
 }

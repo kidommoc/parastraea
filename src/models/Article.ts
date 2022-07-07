@@ -1,14 +1,5 @@
 import { Schema, Model, Types } from 'mongoose'
-
-interface IArticle {
-    title: string
-    anthology: Types.ObjectId
-    content: string
-    html: string
-    date: Date
-    author?: string
-    intro?: string
-}
+import { IArticle } from '@/interfaces/IArticle'
 
 const articleSchema = new Schema<IArticle> ({
     title: { type: String, required: true },
@@ -20,6 +11,6 @@ const articleSchema = new Schema<IArticle> ({
     intro: String,
 })
 
-const Article = (mongoose): Model<IArticle> => mongoose.model('articles', articleSchema)
+const Article = (mongoose): Models.ArticleModel => mongoose.model('articles', articleSchema)
 
 export { Article }
