@@ -1,0 +1,28 @@
+/* Note that COMMENTS ARE NOT AVAILABLE in json. */
+/* remove them before using */
+{
+    "homepage": "/blog",                       /* entry page url */
+    "pages": [
+        /* normal page */
+        {
+            "type": "page",                    /* page type */
+            "url": "/about",                   /* page url */
+            "location": "about.html"           /* html file location */
+        },
+        /* anthology list page */
+        {
+            "type": "list",
+            "url": "/blog",
+            "location": "bloglist.html",       /* template file location */
+            "anthology": "blog"                /* the anthology list representing */
+        },
+        /* article page */
+        {
+            "type": "article",
+            "url": "/blog/:title",             /* use wildcard ":title" in url */
+            "location": "blogarticle.html",    /* template file location */
+            "anthology": "blog"                /* the anthology article belonging to */
+        }
+        /* and more pages ... */
+    ]
+}
