@@ -2,10 +2,11 @@
     "name": "parastraea",
     "version": "0.1.0",
     "description": "a blog framework",
-    "main": "main.js",
+    "main": "src/main.ts",
     "scripts": {
-        "build": "tsc && tsc-alias",
-        "start": "npm run build && node dist/main.js"
+        "build": "tsc --build && tsc-alias",
+        "debug": "npm run build && npm run start",
+        "start": "node dist/main.js"
     },
     "repository": {
         "type": "git",

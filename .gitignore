@@ -1,6 +1,6 @@
 dist/
 node_modules/
 
-config/.env
-config/pages.json
+.env
+pages.json
 package-lock.json
