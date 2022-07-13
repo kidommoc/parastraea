@@ -7,8 +7,7 @@ const articleSchema = new Schema<IArticle> ({
     content: { type: String, required: true },
     html: { type: String, required: true },
     date: { type: Date, required: true, default: new Date() },
-    author: String,
-    intro: String,
+    properties: { type: Schema.Types.Map, of: String }
 })
 
 const Article = (mongoose): Models.ArticleModel => mongoose.model('articles', articleSchema)

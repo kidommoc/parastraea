@@ -5,8 +5,10 @@ import middlewares from '../middlewares'
 export default (): Router => {
     let app = Router()
 
+    // Login: `POST /api/login`
     app.post('/login',
         (req: Request, res: Response, next: NextFunction) => {
+            let passwordHashed = req.body.password
             try {
             } catch (e) {
                 next(e)
@@ -14,6 +16,7 @@ export default (): Router => {
         }
     )
 
+    // Logout: `POST /api/logout`
     app.post('/logout',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {

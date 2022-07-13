@@ -6,6 +6,5 @@ export interface IArticle {
     content: string
     html: string
     date: Date
-    author?: string
-    intro?: string
+    properties: Types.Map<string>
 }

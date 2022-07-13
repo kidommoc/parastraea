@@ -5,9 +5,11 @@ import middlewares from '../middlewares'
 export default (): Router => {
     let app = Router()
 
-    app.get('/',
+    // Get Articles in Anthology: `GET /api/anthology/:name/list`
+    app.get('/:name/list',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
+            let anthologyName = req.params.name
             try {
             } catch (e) {
                 next(e)
@@ -15,6 +17,7 @@ export default (): Router => {
         }
     )
 
+    // New Anthology: `PUT /api/anthology`
     app.put('/',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
@@ -25,6 +28,7 @@ export default (): Router => {
         }
     )
 
+    // Rename Anthology: `POST /api/anthology/:name`
     app.post('/:name',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
@@ -36,10 +40,12 @@ export default (): Router => {
         }
     )
 
+    // Remove Anthology: `DELETE /api/anthology/:name`
     app.delete('/:name',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
-            let anthologyName = req.params.name
+            let anthologyName = req.params.name,
+                isForced = req.body.force
             try {
             } catch (e) {
                 next(e)

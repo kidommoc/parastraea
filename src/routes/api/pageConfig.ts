@@ -5,6 +5,7 @@ import middlewares from '../middlewares'
 export default (): Router => {
     let app = Router()
 
+    // Get Configuration: `GET /api/pages`
     app.get('/', middlewares.isAuth, (req, res) => {
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
@@ -15,9 +16,11 @@ export default (): Router => {
         }
     })
 
+    // Modify Configuration: `POST /api/pages`
     app.post('/',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
+            let newConfig = req.body['page-config']
             try {
             } catch (e) {
                 next(e)

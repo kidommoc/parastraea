@@ -5,7 +5,8 @@ import middlewares from '../middlewares'
 export default (): Router => {
     let app = Router()
 
-    app.get('/article/:title',
+    // Get Article Details: `GET /api/article/:title`
+    app.get('/:title',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
             let articleTitle = req.params.title
@@ -16,9 +17,13 @@ export default (): Router => {
         }
     )
 
-    app.put('/article',
+    // New Article: `PUT /api/article`
+    app.put('/',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
+            let articleTitle= req.body.title,
+                anthologyName = req.body.anthology,
+                articleContent = req.body.content
             try {
             } catch (e) {
                 next(e)
@@ -26,10 +31,12 @@ export default (): Router => {
         }
     )
 
-    app.post('/article/:title',
+    // Edit Article: `POST /api/article/:title`
+    app.post('/:title',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
-        let articleTitle = req.params.title
+            let articleTitle = req.params.title,
+                newContent = req.body.content
             try {
             } catch (e) {
                 next(e)
@@ -37,9 +44,12 @@ export default (): Router => {
         }
     )
 
-    app.post('/articles/anthology',
+    // Change Anthology of Article: `POST /api/article/:title/anthology`
+    app.post('/:title/anthology',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
+            let articleTitle = req.params.title,
+                anthologyName = req.body.anthology
             try {
             } catch (e) {
                 next(e)
@@ -47,9 +57,11 @@ export default (): Router => {
         }
     )
 
-    app.delete('/articles',
+    // Remove Article: `DELETE /api/article/:title`
+    app.delete('/:title',
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
+            let articleTitle = req.params.title
             try {
             } catch (e) {
                 next(e)
