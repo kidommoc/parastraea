@@ -67,7 +67,7 @@ FAILED: STATUS 401 - Authorization failed
 
 ## Anthology
 
-- Get Articles in Anthology: `GET /api/anthology/list`
+- Get Articles in Anthology: `GET /api/anthology/:name/list`
 
 ```json
 [HEADER] Authorization: Bearer <token>
