@@ -4,7 +4,8 @@
 
 - Login: `POST /api/login`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [BODY]
 {
     "password": string
@@ -23,7 +24,7 @@ FAILED: STATUS 401 - Authorization failed
 
 - Logout: `POST /api/logout`
 
-```json
+```
 [HEADER] Authorization: Bearer <token>
 
 --- RETURN ---
@@ -36,7 +37,7 @@ FAILED: STATUS 401 - Authorization failed
 
 - Get Configuration: `GET /api/pages`
 
-```json
+```
 [HEADER] Authorization: Bearer <token>
 
 --- RETURN ---
@@ -52,7 +53,8 @@ FAILED: STATUS 401 - Authorization failed
 
 - Modify Configuration: `POST /api/pages`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -69,7 +71,7 @@ FAILED: STATUS 401 - Authorization failed
 
 - Get Articles in Anthology: `GET /api/anthology/:name/list`
 
-```json
+```
 [HEADER] Authorization: Bearer <token>
 
 --- RETURN ---
@@ -90,7 +92,8 @@ FAILED: STATUS 401 - Authorization failed
 
 - New Anthology: `PUT /api/anthology`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -106,7 +109,8 @@ FAILED: STATUS 499 - Dumplicate name
 
 - Rename Anthology: `POST /api/anthology/:name`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -123,7 +127,8 @@ FAILED: STATUS 498 - Dumplicate name
 
 - Remove Anthology: `DELETE /api/anthology/:name`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -142,7 +147,7 @@ FAILED: STATUS 498 - There're articles in this anthology when `force` is not spe
 
 - Get Article Details: `GET /api/article/:title`
 
-```json
+```
 [HEADER] Authorization: Bearer <token>
 
 --- RETURN ---
@@ -161,7 +166,8 @@ FAILED: STATUS 499 - No article with this title
 
 - New Article: `PUT /api/article`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -179,7 +185,8 @@ FAILED: STATUS 499 - Dumplicate name
 
 - Edit Article: `POST /api/article/:title`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -195,7 +202,8 @@ FAILED: STATUS 499 - No article with this name
 
 - Change Anthology of Article: `POST /api/article/:title/anthology`
 
-```json
+```
+[HEADER] Content-Type: application/json
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
@@ -211,7 +219,7 @@ FAILED: STATUS 499 - No article with this title
 
 - Remove Article: `DELETE /api/article/:title`
 
-```json
+```
 [HEADER] Authorization: Bearer <token>
 
 --- RETURN ---
