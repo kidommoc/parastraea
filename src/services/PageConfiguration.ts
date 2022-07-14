@@ -5,7 +5,7 @@ import path from 'path'
 import config from '@/config'
 
 @Service()
-export class PageConfigurator {
+export class PageConfigurationService {
     private _path: string;
     private _config: {
         entry: string
@@ -80,7 +80,7 @@ export class PageConfigurator {
         })
     }
 
-    public async loadConfig() {
+    public loadConfig() {
         try {
             const text = fs.readFileSync(this._path, 'utf8')
             this.updateConfig(text)
@@ -89,7 +89,7 @@ export class PageConfigurator {
         }
     }
 
-    public async saveConfig() {
+    public saveConfig() {
         try {
             fs.writeFileSync(this._path, this.toString())
         } catch (e) {
@@ -98,6 +98,7 @@ export class PageConfigurator {
     }
 
     public toString(): string {
+        // construct json
         let json: {
             homepage: string,
             pages: any[]
@@ -125,6 +126,39 @@ export class PageConfigurator {
                 anthology: p.anthology
             })
         })
-        return JSON.stringify(json)
+
+        // format json string
+        let jsonString = JSON.stringify(json),
+            pos = 0, depth = 0
+        while (pos < jsonString.length) {
+            if (jsonString[pos] == ':') {
+                jsonString = jsonString.slice(0, pos + 1) + ' '
+                    + jsonString.slice(pos + 1, jsonString.length)
+                pos += 2
+                continue
+            }
+            if ('{[,'.includes(jsonString[pos])) {
+                if ('{['.includes(jsonString[pos]))
+                    ++depth
+                let insert = '\n'
+                for (let i = 0; i < depth; ++i)
+                    insert += '    '
+                jsonString = jsonString.slice(0, pos + 1) + insert
+                    + jsonString.slice(pos + 1, jsonString.length)
+                pos += depth * 4 + 1
+            }
+            if ('}]'.includes(jsonString[pos])) {
+                --depth
+                let insert = '\n'
+                for (let i = 0; i < depth; ++i)
+                    insert += '    '
+                jsonString = jsonString.slice(0, pos) + insert
+                    + jsonString.slice(pos, jsonString.length)
+                pos += depth * 4 + 1
+            }
+            ++pos
+        }
+
+        return jsonString
     }
 }

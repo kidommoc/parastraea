@@ -3,17 +3,17 @@ import { Container } from 'typedi'
 import path from 'path'
 
 import config from '@/config'
-import { PageConfigurator } from '@/services/PageConfiguration'
-import { PageGenerator } from '@/services/PageGeneration'
+import { PageConfigurationService } from '@/services/PageConfiguration'
+import { PageGenerationService } from '@/services/PageGeneration'
 
 export default (): Router => {
     let app = Router()
-    let pageConfig = Container.get(PageConfigurator)
-    let pageGenerator = Container.get(PageGenerator)
+    let pageConfigurationServiceInstance = Container.get(PageConfigurationService)
+    let pageGenerationServiceInstance = Container.get(PageGenerationService)
 
-    pageConfig.getConfig().pages.forEach(p => {
+    pageConfigurationServiceInstance.getConfig().pages.forEach(p => {
         app.get(p.url,
-            async (req: Request, res: Response, next: NextFunction) => {
+            (req: Request, res: Response, next: NextFunction) => {
                 try {
                     // log
                     const filePath = path.join(config.rootPath, '/public', p.location)
@@ -27,12 +27,13 @@ export default (): Router => {
         // log
     })
 
-    pageConfig.getConfig().lists.forEach(p => {
+    pageConfigurationServiceInstance.getConfig().lists.forEach(p => {
         app.get(p.url,
             async (req: Request, res: Response, next: NextFunction) => {
                 // log
                 try {
-                    const html = pageGenerator.generateList(p.anthology, p.location)
+                    const html = await pageGenerationServiceInstance
+                        .generateList(p.anthology, p.location)
                     res.send(html)
                 } catch (e) {
                     // log
@@ -43,12 +44,13 @@ export default (): Router => {
         // log
     })
 
-    pageConfig.getConfig().articles.forEach(p => {
+    pageConfigurationServiceInstance.getConfig().articles.forEach(p => {
         app.get(p.url,
             async (req: Request, res: Response, next: NextFunction) => {
                 // log
                 try {
-                    const html = pageGenerator.generateArticle(req.params.title, p.anthology, p.location)
+                    const html = await pageGenerationServiceInstance
+                        .generateArticle(req.params.title, p.anthology, p.location)
                     res.send(html)
                 } catch (e) {
                     // log
