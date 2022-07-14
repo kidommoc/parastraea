@@ -10,7 +10,6 @@ export default (): Router => {
     app.use('/', auth())
     app.use('/pages', pageConfig())
     app.use('/anthology', anthology())
-    // `/article` and `/articles`
-    app.use('/', article())
+    app.use('/article', article())
     return app
 }

@@ -2,7 +2,7 @@ import { Service } from 'typedi'
 
 @Service()
 export class PageGenerationService {
-    public async generateList(anthology: string, path: string): Promise<string> {
+    public async generateList(anthology: string, path: string, page: number): Promise<string> {
         return JSON.stringify({
             anthology: anthology, path: path
         })

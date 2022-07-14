@@ -16,7 +16,6 @@ export default (): Router => {
             console.log('REQUEST: GET /api/pages')
             try {
                 const pageConfigJson = pageConfigurationServiceInstance.toString()
-                console.log(pageConfigJson)
                 res.status(200).send(pageConfigJson)
             } catch (e) {
                 next(e)
@@ -35,7 +34,6 @@ export default (): Router => {
                 pageConfigurationServiceInstance.updateConfig(newConfig)
                 pageConfigurationServiceInstance.saveConfig()
                 // log
-                console.log(pageConfigurationServiceInstance.getConfig())
                 res.status(200).send()
             } catch (e) {
                 next(e)

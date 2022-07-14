@@ -33,7 +33,21 @@ export default (): Router => {
                 // log
                 try {
                     const html = await pageGenerationServiceInstance
-                        .generateList(p.anthology, p.location)
+                        .generateList(p.anthology, p.location, 0)
+                    res.send(html)
+                } catch (e) {
+                    // log
+                    next(e)
+                }
+            }
+        )
+        app.get(p.url + '/:page(\d+)',
+            async (req: Request, res: Response, next: NextFunction) => {
+                let page: number = +req.params.page
+                // log
+                try {
+                    const html = await pageGenerationServiceInstance
+                        .generateList(p.anthology, p.location, page - 1)
                     res.send(html)
                 } catch (e) {
                     // log
