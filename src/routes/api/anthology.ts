@@ -8,6 +8,22 @@ export default (): Router => {
     let app = Router(),
         anthologyServiceInstance = Container.get(AnthologyService)
 
+    // Get Anthology list: `GET /api/anthology/list`
+    app.get('/list',
+        middlewares.isAuth,
+        async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                let anthologies = await anthologyServiceInstance.getAnthologyList()
+                let result = {
+                    anthologies: anthologies
+                }
+                res.status(200).send(result)
+            } catch (e) {
+                next(e)
+            }
+        }
+    )
+
     // Get Articles in Anthology: `GET /api/anthology/:name/list`
     app.get('/:name/list',
         middlewares.isAuth,

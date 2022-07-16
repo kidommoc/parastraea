@@ -63,7 +63,9 @@ export class ArticleService {
             throw new Error('Dumplicate name!')
     }
 
-    public async editArticle(title: string, content: string) {
+    public async editArticle(title: string, newTitle: string, content: string) {
+        if (!await this.checkTitle(title))
+            throw new Error('Dumplicate name!')
     }
 
     public async changeAnthology(title: string, anthology: string) {
@@ -72,13 +74,19 @@ export class ArticleService {
         })
         if (!articleQueryResult)
             throw new Error('No article with this title!')
-        let anthologyQueryResult = await this.anthologyModel.findOne({
+        let oldAnthology = await this.anthologyModel.findById(articleQueryResult.anthology)
+        let newAnthology = await this.anthologyModel.findOne({
             name: anthology
-        }).lean()
-        if (!anthologyQueryResult)
+        })
+        if (!newAnthology)
             throw new Error('No anthology with this name!')
-        articleQueryResult.anthology = anthologyQueryResult._id
+        // will use transaction in future
+        articleQueryResult.anthology = newAnthology._id
+        --oldAnthology.size
+        ++newAnthology.size
         await articleQueryResult.save()
+        await oldAnthology.save()
+        await newAnthology.save()
     }
 
     public async removeArticle(title: string) {

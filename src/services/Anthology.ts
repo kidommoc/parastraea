@@ -20,6 +20,19 @@ export class AnthologyService {
         return true
     }
 
+    public async getAnthologyList() {
+        let anthologies: { name: string, size: number }[] = []
+        let queryResult = await this.anthologyModel.find()
+            .select({ name: 1, size: 1 }).lean()
+        if (!queryResult)
+            return anthologies
+        queryResult.forEach(e => anthologies.push({
+            name: e.name,
+            size: e.size
+        }))
+        return anthologies
+    }
+
     public async getArticleList(anthologyName: string) {
         let articles: {
             title: string,

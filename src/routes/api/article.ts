@@ -47,9 +47,10 @@ export default (): Router => {
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
             let articleTitle = req.params.title,
-                newContent = req.body.content
+                newTitle = req.body['new-title'],
+                newContent = req.body['new-content']
             try {
-                await articleServiceInstance.editArticle(articleTitle, newContent)
+                await articleServiceInstance.editArticle(articleTitle, newTitle, newContent)
                 res.status(200).send()
             } catch (e) {
                 next(e)
@@ -62,7 +63,7 @@ export default (): Router => {
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
             let articleTitle = req.params.title,
-                anthologyName = req.body.anthology
+                anthologyName = req.body['new-anthology']
             try {
                 await articleServiceInstance.changeAnthology(articleTitle, anthologyName)
                 res.status(200).send()
