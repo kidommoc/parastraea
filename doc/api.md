@@ -69,6 +69,27 @@ FAILED: STATUS 401 - Authorization failed
 
 ## Anthology
 
+- Get Anthology list: `GET /api/anthology/list`
+
+```
+[HEADER] Authorization: Bearer <token>
+
+--- RETURN ---
+
+SUCCESS: STATUS 200
+[BODY]
+{
+    "anthologies": [
+        {
+            "name": string,
+            "size": number
+        }, ...
+    ]
+}
+
+FAILED: STATUS 401 - Authorization failed
+```
+
 - Get Articles in Anthology: `GET /api/anthology/:name/list`
 
 ```
@@ -88,6 +109,7 @@ SUCCESS: STATUS 200
 }
 
 FAILED: STATUS 401 - Authorization failed
+FAILED: STATUS 499 - No anthology with this name
 ```
 
 - New Anthology: `PUT /api/anthology`
@@ -156,8 +178,7 @@ SUCCESS: STATUS 200
 [BODY]
 {
     "content": string,
-    "anthology": string,
-    "date": Date
+    "anthology": string
 }
 
 FAILED: STATUS 401 - Authorization failed
@@ -190,7 +211,8 @@ FAILED: STATUS 499 - Dumplicate name
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
-    "content": string
+    "new-title": string,
+    "new-content": string
 }
 
 --- RETURN ---
@@ -207,7 +229,7 @@ FAILED: STATUS 499 - No article with this name
 [HEADER] Authorization: Bearer <token>
 [BODY]
 {
-    "anthology": string
+    "new-anthology": string
 }
 
 --- RETURN ---
