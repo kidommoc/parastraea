@@ -15,10 +15,8 @@ export class AnthologyService {
         let queryResult = await this.anthologyModel.find({
             name: name
         }).lean()
-        if (queryResult.length != 0) {
-            console.log('??')
+        if (queryResult.length != 0)
             return false
-        }
         return true
     }
 
@@ -35,11 +33,11 @@ export class AnthologyService {
             throw new Error('No anthology with this name!')
 
         let anthologyId = anthologyDocument._id
-        let articlesQueryResult = await this.articleModel.find({
+        let queryResult = await this.articleModel.find({
             anthology: anthologyId
         }).lean().sort({ date: -1 })
 
-        articlesQueryResult.forEach(a => {
+        queryResult.forEach(a => {
             articles.push({
                 title: a.title,
                 date: a.date.getTime()
@@ -61,14 +59,13 @@ export class AnthologyService {
     public async renameAnthology(oldName: string, newName: string) {
         if (!await this.checkName(newName))
             throw new Error('Dumplicated name!')
-        let queryResult = await this.anthologyModel.find({
+        let queryResult = await this.anthologyModel.findOne({
             name: oldName
         })
-        if (queryResult.length == 0)
+        if (!queryResult)
             throw new Error('No anthology with this name!')
-        let anthology = queryResult[0]
-        anthology.name = newName
-        await anthology.save()
+        queryResult.name = newName
+        await queryResult.save()
     }
 
     public async removeAnthology(name: string, forced: boolean) {

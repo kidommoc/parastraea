@@ -5,8 +5,8 @@ import middlewares from '../middlewares'
 import { AnthologyService } from '@/services/Anthology'
 
 export default (): Router => {
-    let app = Router()
-    let anthologyServiceInstance = Container.get(AnthologyService)
+    let app = Router(),
+        anthologyServiceInstance = Container.get(AnthologyService)
 
     // Get Articles in Anthology: `GET /api/anthology/:name/list`
     app.get('/:name/list',
