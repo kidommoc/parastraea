@@ -22,6 +22,7 @@
         "cors": "^2.8.5",
         "dotenv": "^16.0.1",
         "express": "^4.17.1",
+        "md2h5": "file:dependencies/md2h5",
         "mongoose": "^6.3.5",
         "reflect-metadata": "^0.1.13",
         "typedi": "^0.10.0"
