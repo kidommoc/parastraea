@@ -1,4 +1,4 @@
-import { Schema, Model, Types } from 'mongoose'
+import { Schema } from 'mongoose'
 import { IArticle } from '@/interfaces/IArticle'
 
 const articleSchema = new Schema<IArticle> ({

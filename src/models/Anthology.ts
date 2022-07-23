@@ -1,4 +1,4 @@
-import { Schema, Model } from 'mongoose'
+import { Schema } from 'mongoose'
 import { IAnthology } from '@/interfaces/IAnthology'
 
 const anthologySchema = new Schema<IAnthology>({
