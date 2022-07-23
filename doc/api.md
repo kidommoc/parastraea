@@ -202,6 +202,7 @@ FAILED: STATUS 499 - No article with this title
 SUCCESS: STATUS 200
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - Dumplicate name
+FAILED: STATUS 498 - No anthology with this name
 ```
 
 - Edit Article: `POST /api/article/:title`
@@ -237,6 +238,7 @@ FAILED: STATUS 499 - No article with this name
 SUCCESS: STATUS 200
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - No article with this title
+FAILED: STATUS 498 - No anthology with this name
 ```
 
 - Remove Article: `DELETE /api/article/:title`
