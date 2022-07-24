@@ -5,6 +5,7 @@
     "main": "src/main.ts",
     "scripts": {
         "build": "tsc --build && tsc-alias",
+        "createTestDb": "node scripts/createTestDb.js",
         "debug": "npm run build && npm run start",
         "start": "node dist/main.js"
     },
