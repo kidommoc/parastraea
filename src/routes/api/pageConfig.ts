@@ -14,9 +14,8 @@ export default (): Router => {
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
             // log
-            console.log('REQUEST: GET /api/pages')
             try {
-                const pageConfigJson = pageConfigurationServiceInstance.toString()
+                const pageConfigJson = pageConfigurationServiceInstance.toJson()
                 res.status(200).send(pageConfigJson)
             } catch (e) {
                 if (e instanceof Errors.CodedError) {
@@ -38,11 +37,11 @@ export default (): Router => {
         middlewares.isAuth,
         (req: Request, res: Response, next: NextFunction) => {
             // log
-            console.log('REQUEST: POST /api/pages')
             let newConfig = req.body['page-config']
             try {
                 pageConfigurationServiceInstance.updateConfig(newConfig)
                 pageConfigurationServiceInstance.saveConfig()
+                pageConfigurationServiceInstance.reroute()
                 // log
                 res.status(200).send()
             } catch (e) {

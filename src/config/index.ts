@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import path from 'path'
+import path from 'node:path'
 
 const envfound = dotenv.config()
 if (envfound.error) {

@@ -4,6 +4,6 @@ import expressLoader from './express'
 
 export default async (expressApp) => {
     let models = await dbLoader()
-    injectorLoader(models)
+    injectorLoader(expressApp, models)
     expressLoader(expressApp)
 }

@@ -1,6 +1,7 @@
-import { Service } from 'typedi'
-import fs from 'fs'
-import path from 'path'
+import { Inject, Service } from 'typedi'
+import express from 'express'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import config from '@/config'
 
@@ -24,6 +25,9 @@ export class PageConfigurationService {
             anthology: string
         }[]
     }
+
+    @Inject('ExpressApp')
+    private _app: express.Application
 
     constructor() {
         this._path = path.join(config.rootPath, '/pages.json')
@@ -89,8 +93,17 @@ export class PageConfigurationService {
         fs.writeFileSync(this._path, this.toString())
     }
 
-    public toString(): string {
-        // construct json
+    public reroute() {
+        let stack = this._app._router.stack
+        let foundLayer = stack.find(function(x) { return '/'.match(x.regexp) && x.name == 'router' })
+        let index = stack.indexOf(foundLayer instanceof Array ? foundLayer[0] : foundLayer)
+        if (index == -1)
+            throw new Error('reroute failed')
+        const router = require('@/routes')
+        this._app._router.stack[Number(index)].handle = router.default()
+    }
+
+    public toJson() {
         let json: {
             homepage: string,
             pages: any[]
@@ -118,6 +131,12 @@ export class PageConfigurationService {
                 anthology: p.anthology
             })
         })
+        return json
+    }
+
+    public toString(): string {
+        // construct json
+        let json = this.toJson()
 
         // format json string
         let jsonString = JSON.stringify(json),
