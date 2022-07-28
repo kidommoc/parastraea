@@ -5,6 +5,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import config from '@/config'
+import Errors from '@/Errors'
+
+export enum ErrTypes {
+    SIGNUP_FAIL,
+    AUTH_FAIL,
+    NO_ADMIN
+}
 
 @Service()
 export class AuthorizationService {
@@ -18,9 +25,8 @@ export class AuthorizationService {
     }
 
     public signup(p: string) {
-        console.log(this._passwordPath)
         if (fs.existsSync(this._passwordPath))
-            throw new Error('Cannot sign up!')
+            throw new Errors.CodedError(ErrTypes.SIGNUP_FAIL, 'Cannot sign up!')
         else {
             let doubleHashed = crypto.createHmac('sha256', config.secretText)
                 .update(p).digest('hex')
@@ -37,12 +43,12 @@ export class AuthorizationService {
         try {
             password = fs.readFileSync(this._passwordPath, { encoding: 'utf-8' })
         } catch (e) {
-            throw new Error('No administrator!')
+            throw new Errors.CodedError(ErrTypes.NO_ADMIN, 'No administrator!')
         }
         let hashed = crypto.createHmac('sha256', config.secretText)
             .update(p).digest('hex')
         if (hashed != password)
-            throw new Error('Authorization failed!')
+            throw new Errors.CodedError(ErrTypes.AUTH_FAIL, 'Authorization failed!')
         let token = jwt.sign(
             { hello: 'thanks for using Parastraea!' },
             this._jwtSecret,
@@ -61,7 +67,7 @@ export class AuthorizationService {
             )
             return newToken
         } catch (e) {
-            throw new Error('Authorization failed!')
+            throw new Errors.CodedError(ErrTypes.AUTH_FAIL, 'Authorization failed!')
         }
     }
 }

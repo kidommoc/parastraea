@@ -1,5 +1,13 @@
 import { Inject, Service } from 'typedi'
 
+import Errors from '@/Errors'
+
+export enum ErrTypes {
+    NO_ANTHOLOGY,
+    DUMP_NAME,
+    CONTAIN_ARTICLE
+}
+
 @Service()
 export class AnthologyService {
     @Inject('AnthologyModel')
@@ -12,21 +20,21 @@ export class AnthologyService {
     }
 
     private async checkName(name: string): Promise<boolean> {
-        let queryResult = await this.anthologyModel.find({
+        let count = await this.anthologyModel.count({
             name: name
-        }).lean()
-        if (queryResult.length != 0)
-            return false
-        return true
+        })
+        if (count == 0)
+            return true
+        return false
     }
 
     public async getAnthologyList() {
         let anthologies: { name: string, size: number }[] = []
-        let queryResult = await this.anthologyModel.find()
+        let anthologyDocuments = await this.anthologyModel.find()
             .select({ name: 1, size: 1 }).lean()
-        if (!queryResult)
+        if (!anthologyDocuments)
             return anthologies
-        queryResult.forEach(e => anthologies.push({
+        anthologyDocuments.forEach(e => anthologies.push({
             name: e.name,
             size: e.size
         }))
@@ -43,14 +51,16 @@ export class AnthologyService {
             name: anthologyName
         }).lean()
         if (!anthologyDocument)
-            throw new Error('No anthology with this name!')
+            throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
 
         let anthologyId = anthologyDocument._id
-        let queryResult = await this.articleModel.find({
+        let articleDocuments = await this.articleModel.find({
             anthology: anthologyId
         }).lean().sort({ date: -1 })
 
-        queryResult.forEach(a => {
+        if(!articleDocuments)
+            return articles
+        articleDocuments.forEach(a => {
             articles.push({
                 title: a.title,
                 date: a.date.getTime()
@@ -61,26 +71,41 @@ export class AnthologyService {
 
     public async createAnthology(name: string) {
         if (!await this.checkName(name))
-            throw new Error('Dumplicated name!')
-        let newAnthology = new this.anthologyModel({
+            throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
+        let newAnthologyDocument = new this.anthologyModel({
             name: name,
             size: 0
         })
-        await newAnthology.save()
+        await newAnthologyDocument.save()
     }
 
     public async renameAnthology(oldName: string, newName: string) {
         if (!await this.checkName(newName))
-            throw new Error('Dumplicated name!')
-        let queryResult = await this.anthologyModel.findOne({
+            throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
+        let anthologyDocument = await this.anthologyModel.findOne({
             name: oldName
         })
-        if (!queryResult)
-            throw new Error('No anthology with this name!')
-        queryResult.name = newName
-        await queryResult.save()
+        if (!anthologyDocument)
+            throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
+        anthologyDocument.name = newName
+        await anthologyDocument.save()
     }
 
     public async removeAnthology(name: string, forced: boolean) {
+        let anthologyDocument = await this.anthologyModel.findOne({
+            name: name
+        }).lean()
+        if (!anthologyDocument)
+            throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
+        let anthologyId = anthologyDocument._id
+        let articleCount = await this.articleModel.count({
+            anthology: anthologyId
+        })
+        if (articleCount != 0 && !forced)
+            throw new Errors.CodedError(ErrTypes.CONTAIN_ARTICLE, 'There\'re articles in this anthology when force is not specified or false!')
+        await this.articleModel.deleteMany({
+            anthology: anthologyId
+        })
+        await this.anthologyModel.findByIdAndDelete(anthologyId)
     }
 }

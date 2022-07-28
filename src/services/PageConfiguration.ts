@@ -81,20 +81,12 @@ export class PageConfigurationService {
     }
 
     public loadConfig() {
-        try {
-            const text = fs.readFileSync(this._path, 'utf8')
-            this.updateConfig(text)
-        } catch (e) {
-            throw new Error(`cannott load page config!\nErrmsg: ${e}`)
-        }
+        const text = fs.readFileSync(this._path, 'utf8')
+        this.updateConfig(text)
     }
 
     public saveConfig() {
-        try {
-            fs.writeFileSync(this._path, this.toString())
-        } catch (e) {
-            throw new Error(`cannot store new page config!\nErrmsg: ${e}`)
-        }
+        fs.writeFileSync(this._path, this.toString())
     }
 
     public toString(): string {

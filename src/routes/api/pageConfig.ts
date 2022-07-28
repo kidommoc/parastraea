@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express'
 import { Container } from 'typedi'
 
 import middlewares from '../middlewares'
+import Errors from '@/Errors'
 import { PageConfigurationService } from '@/services/PageConfiguration'
 
 export default (): Router => {
@@ -18,7 +19,16 @@ export default (): Router => {
                 const pageConfigJson = pageConfigurationServiceInstance.toString()
                 res.status(200).send(pageConfigJson)
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )
@@ -36,7 +46,16 @@ export default (): Router => {
                 // log
                 res.status(200).send()
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )

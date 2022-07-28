@@ -2,7 +2,8 @@ import { Router, Request, Response, NextFunction } from 'express'
 import { Container } from 'typedi'
 
 import middlewares from '../middlewares'
-import { AnthologyService } from '@/services/Anthology'
+import Errors from '@/Errors'
+import { ErrTypes as AnthologyErrs, AnthologyService } from '@/services/Anthology'
 
 export default (): Router => {
     let app = Router(),
@@ -20,7 +21,16 @@ export default (): Router => {
                 }
                 res.status(200).send(result)
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )
@@ -38,7 +48,19 @@ export default (): Router => {
                 }
                 res.status(200).send(result)
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        case AnthologyErrs.NO_ANTHOLOGY:
+                            res.status(499)
+                            break
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )
@@ -53,7 +75,19 @@ export default (): Router => {
                 await anthologyServiceInstance.createAnthology(anthologyName)
                 res.status(200).send()
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        case AnthologyErrs.DUMP_NAME:
+                            res.status(499)
+                            break
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )
@@ -69,7 +103,22 @@ export default (): Router => {
                 await anthologyServiceInstance.renameAnthology(oldName, newName)
                 res.status(200).send()
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        case AnthologyErrs.NO_ANTHOLOGY:
+                            res.status(499)
+                            break
+                        case AnthologyErrs.DUMP_NAME:
+                            res.status(498)
+                            break
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )
@@ -85,7 +134,22 @@ export default (): Router => {
                 await anthologyServiceInstance.removeAnthology(anthologyName, isForced)
                 res.status(200).send()
             } catch (e) {
-                next(e)
+                if (e instanceof Errors.CodedError) {
+                    switch (e.code) {
+                        case AnthologyErrs.NO_ANTHOLOGY:
+                            res.status(499)
+                            break
+                        case AnthologyErrs.CONTAIN_ARTICLE:
+                            res.status(498)
+                            break
+                        default:
+                            res.status(400)
+                            break
+                    }
+                }
+                else
+                    res.status(500)
+                next(new Error(e.message))
             }
         }
     )

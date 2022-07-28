@@ -3,6 +3,7 @@ import { Container } from 'typedi'
 import path from 'path'
 
 import config from '@/config'
+import Errors from '@/Errors'
 import { PageConfigurationService } from '@/services/PageConfiguration'
 import { PageGenerationService } from '@/services/PageGeneration'
 
@@ -20,7 +21,16 @@ export default (): Router => {
                     res.header('Content-Type', 'text/html')
                     res.sendFile(filePath)
                 } catch (e) {
-                    next(e)
+                    if (e instanceof Errors.CodedError) {
+                        switch (e.code) {
+                            default:
+                                res.status(400)
+                                break
+                        }
+                    }
+                    else
+                        res.status(500)
+                    next(new Error(e.message))
                 }
             }
         )
@@ -36,7 +46,16 @@ export default (): Router => {
                     res.header('Content-Type', 'text/html')
                     res.send(html)
                 } catch (e) {
-                    next(e)
+                    if (e instanceof Errors.CodedError) {
+                        switch (e.code) {
+                            default:
+                                res.status(400)
+                                break
+                        }
+                    }
+                    else
+                        res.status(500)
+                    next(new Error(e.message))
                 }
             }
         )
@@ -50,7 +69,16 @@ export default (): Router => {
                     res.header('Content-Type', 'text/html')
                     res.send(html)
                 } catch (e) {
-                    next(e)
+                    if (e instanceof Errors.CodedError) {
+                        switch (e.code) {
+                            default:
+                                res.status(400)
+                                break
+                        }
+                    }
+                    else
+                        res.status(500)
+                    next(new Error(e.message))
                 }
             }
         )
@@ -66,7 +94,16 @@ export default (): Router => {
                     res.header('Content-Type', 'text/html')
                     res.send(html)
                 } catch (e) {
-                    next(e)
+                    if (e instanceof Errors.CodedError) {
+                        switch (e.code) {
+                            default:
+                                res.status(400)
+                                break
+                        }
+                    }
+                    else
+                        res.status(500)
+                    next(new Error(e.message))
                 }
             }
         )
