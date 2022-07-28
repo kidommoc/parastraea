@@ -120,4 +120,6 @@ And `my.blog.site/blogs/2`:
 
 ## Configuration
 
-Configuration files are located in project root directory, contaning a `.env` and a mentioned-above `page.json`. Parastraea uses `.env` file for environment configuration. Please check `.example`s for details. It's recommended to copy, rename and modify `.env.example` for configurating blameless.
+Configuration files are located in project root directory, contaning a `.env` and a mentioned-above `page.json`. Parastraea uses `.env` file for environment configuration. Please check `.example`s for details. It's recommended to copy, rename and modify `.env.example` for configurating blamelessly.
+
+*Administrator signup* should be taken at the first time `parastraea` runs. Visit manage page, and a redirection to sign up page will happen. **Only if no signup before would this happend**. Removing the `.secret` file in project root directory makes re-signup (aka password changing) available.

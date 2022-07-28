@@ -2,6 +2,21 @@
 
 ## Authorization
 
+- Signup: `POST /api/signup`
+
+```
+[HEADER] Content-Type: application/json
+[BODY]
+{
+    "password": string
+}
+
+--- RETURN ---
+
+SUCCESS: STATUS 200
+FAILED: STATUS 499 - Cannot signup
+```
+
 - Login: `POST /api/login`
 
 ```
@@ -14,22 +29,12 @@
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Content-Type: application/json
 [BODY]
 {
     "token": string (in jwt)
 }
 
-FAILED: STATUS 401 - Authorization failed
-```
-
-- Logout: `POST /api/logout`
-
-```
-[HEADER] Authorization: Bearer <token>
-
---- RETURN ---
-
-SUCCESS: STATUS 200
 FAILED: STATUS 401 - Authorization failed
 ```
 
@@ -43,6 +48,8 @@ FAILED: STATUS 401 - Authorization failed
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Content-Type: application/json
+[HEADER] Authorization: <new token>
 [BODY]
 {
     "page-config": string (in json)
@@ -64,6 +71,8 @@ FAILED: STATUS 401 - Authorization failed
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 ```
 
@@ -77,6 +86,8 @@ FAILED: STATUS 401 - Authorization failed
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Content-Type: application/json
+[HEADER] Authorization: <new token>
 [BODY]
 {
     "anthologies": [
@@ -98,6 +109,8 @@ FAILED: STATUS 401 - Authorization failed
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Content-Type: application/json
+[HEADER] Authorization: <new token>
 [BODY]
 {
     "articles": [
@@ -125,6 +138,8 @@ FAILED: STATUS 499 - No anthology with this name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - Dumplicate name
 ```
@@ -142,6 +157,8 @@ FAILED: STATUS 499 - Dumplicate name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - No anthology with this name
 FAILED: STATUS 498 - Dumplicate name
@@ -160,6 +177,8 @@ FAILED: STATUS 498 - Dumplicate name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - No anthology with this name
 FAILED: STATUS 498 - There're articles in this anthology when `force` is not specified or `false`
@@ -175,6 +194,8 @@ FAILED: STATUS 498 - There're articles in this anthology when `force` is not spe
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Content-Type: application/json
+[HEADER] Authorization: <new token>
 [BODY]
 {
     "content": string,
@@ -200,6 +221,8 @@ FAILED: STATUS 499 - No article with this title
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - Dumplicate name
 FAILED: STATUS 498 - No anthology with this name
@@ -219,6 +242,8 @@ FAILED: STATUS 498 - No anthology with this name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - No article with this name
 ```
@@ -236,6 +261,8 @@ FAILED: STATUS 499 - No article with this name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
 FAILED: STATUS 499 - No article with this title
 FAILED: STATUS 498 - No anthology with this name
@@ -249,6 +276,7 @@ FAILED: STATUS 498 - No anthology with this name
 --- RETURN ---
 
 SUCCESS: STATUS 200
+[HEADER] Authorization: <new token>
+
 FAILED: STATUS 401 - Authorization failed
-FAILED: STATUS 499 - No article with this title
 ```
