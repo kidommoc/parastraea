@@ -4,7 +4,7 @@ import { IArticle } from '@/interfaces/IArticle'
 
 declare global {
     namespace Models {
-        export type AnthologyModel = Model<IAnthology & Document>
-        export type ArticleModel = Model<IArticle & Document>
+        type AnthologyModel = Model<IAnthology & Document>
+        type ArticleModel = Model<IArticle & Document>
     }
 }

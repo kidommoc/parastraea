@@ -14,8 +14,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
         let newToken = authorizationServiceInstance.verify(authHeader[1])
         res.set('Access-Control-Expose-Headers', 'Authorization')
         res.header('Authorization', newToken)
-        next()
     } catch (e) {
         throw new Error('Authorization failed!')
     }
+    next()
 }
