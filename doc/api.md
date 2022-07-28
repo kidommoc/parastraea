@@ -36,6 +36,7 @@ SUCCESS: STATUS 200
 }
 
 FAILED: STATUS 401 - Authorization failed
+FAILED: STATUS 499 - No administrator
 ```
 
 ## Page Configuration
