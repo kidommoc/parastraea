@@ -153,7 +153,7 @@ export class ArticleService {
             --anthologyDocument.size
             await anthologyDocument.save()
         }
-        await this.articleModel.remove({
+        await this.articleModel.deleteOne({
             title: title
         })
     }

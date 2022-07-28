@@ -12,6 +12,7 @@ export default (): Router => {
     app.get('/list',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             try {
                 let anthologies = await anthologyServiceInstance.getAnthologyList()
                 let result = {
@@ -28,6 +29,7 @@ export default (): Router => {
     app.get('/:name/list',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let anthologyName = req.params.name
             try {
                 let articles = await anthologyServiceInstance.getArticleList(anthologyName)
@@ -45,6 +47,7 @@ export default (): Router => {
     app.put('/',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let anthologyName = req.body.name
             try {
                 await anthologyServiceInstance.createAnthology(anthologyName)
@@ -59,6 +62,7 @@ export default (): Router => {
     app.post('/:name',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let oldName = req.params.name,
                 newName = req.body['new-name']
             try {
@@ -74,6 +78,7 @@ export default (): Router => {
     app.delete('/:name',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let anthologyName = req.params.name,
                 isForced = req.body.force || false
             try {

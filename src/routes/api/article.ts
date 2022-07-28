@@ -12,6 +12,7 @@ export default (): Router => {
     app.get('/:title',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let articleTitle = req.params.title
             try {
                 let result = await articleServiceInstance.getArticleRawText(articleTitle)
@@ -26,6 +27,7 @@ export default (): Router => {
     app.put('/',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let articleTitle= req.body.title,
                 anthologyName = req.body.anthology,
                 articleContent = req.body.content
@@ -46,6 +48,7 @@ export default (): Router => {
     app.post('/:title',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let articleTitle = req.params.title,
                 newTitle = req.body['new-title'],
                 newContent = req.body['new-content']
@@ -62,6 +65,7 @@ export default (): Router => {
     app.post('/:title/anthology',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let articleTitle = req.params.title,
                 anthologyName = req.body['new-anthology']
             try {
@@ -77,6 +81,7 @@ export default (): Router => {
     app.delete('/:title',
         middlewares.isAuth,
         async (req: Request, res: Response, next: NextFunction) => {
+            // log
             let articleTitle = req.params.title
             try {
                 await articleServiceInstance.removeArticle(articleTitle)

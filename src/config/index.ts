@@ -14,4 +14,5 @@ export default {
     port: parseInt(process.env.PORT, 10),
     rootPath: process.env.ROOT_PATH,
     mongodbUri: process.env.MONGODB_URI,
+    secretText: process.env.SECRET_TEXT
 }
