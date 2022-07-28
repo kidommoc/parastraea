@@ -1,8 +1,6 @@
 # To-do List
 
-[ ] api document
-
-[ ] administrator account script
+[x] api document
 
 [ ] manage page
 
