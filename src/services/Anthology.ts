@@ -11,16 +11,16 @@ export enum ErrTypes {
 @Service()
 export class AnthologyService {
     @Inject('AnthologyModel')
-    private anthologyModel: Models.AnthologyModel
+    private _anthologyModel: Models.AnthologyModel
 
     @Inject('ArticleModel')
-    private articleModel: Models.ArticleModel
+    private _articleModel: Models.ArticleModel
 
     constructor () {
     }
 
     private async checkName(name: string): Promise<boolean> {
-        let count = await this.anthologyModel.count({
+        let count = await this._anthologyModel.count({
             name: name
         })
         if (count == 0)
@@ -30,7 +30,7 @@ export class AnthologyService {
 
     public async getAnthologyList() {
         let anthologies: { name: string, size: number }[] = []
-        let anthologyDocuments = await this.anthologyModel.find()
+        const anthologyDocuments = await this._anthologyModel.find()
             .select({ name: 1, size: 1 }).lean()
         if (!anthologyDocuments)
             return anthologies
@@ -47,14 +47,14 @@ export class AnthologyService {
             date: number
         }[] = []
 
-        let anthologyDocument = await this.anthologyModel.findOne({
+        const anthologyDocument = await this._anthologyModel.findOne({
             name: anthologyName
         }).lean()
         if (!anthologyDocument)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
 
-        let anthologyId = anthologyDocument._id
-        let articleDocuments = await this.articleModel.find({
+        const anthologyId = anthologyDocument._id
+        const articleDocuments = await this._articleModel.find({
             anthology: anthologyId
         }).lean().sort({ date: -1 })
 
@@ -72,7 +72,7 @@ export class AnthologyService {
     public async createAnthology(name: string) {
         if (!await this.checkName(name))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
-        let newAnthologyDocument = new this.anthologyModel({
+        let newAnthologyDocument = new this._anthologyModel({
             name: name,
             size: 0
         })
@@ -82,7 +82,7 @@ export class AnthologyService {
     public async renameAnthology(oldName: string, newName: string) {
         if (!await this.checkName(newName))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
-        let anthologyDocument = await this.anthologyModel.findOne({
+        let anthologyDocument = await this._anthologyModel.findOne({
             name: oldName
         })
         if (!anthologyDocument)
@@ -92,20 +92,20 @@ export class AnthologyService {
     }
 
     public async removeAnthology(name: string, forced: boolean) {
-        let anthologyDocument = await this.anthologyModel.findOne({
+        let anthologyDocument = await this._anthologyModel.findOne({
             name: name
         }).lean()
         if (!anthologyDocument)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
         let anthologyId = anthologyDocument._id
-        let articleCount = await this.articleModel.count({
+        let articleCount = await this._articleModel.count({
             anthology: anthologyId
         })
         if (articleCount != 0 && !forced)
             throw new Errors.CodedError(ErrTypes.CONTAIN_ARTICLE, 'There\'re articles in this anthology when force is not specified or false!')
-        await this.articleModel.deleteMany({
+        await this._articleModel.deleteMany({
             anthology: anthologyId
         })
-        await this.anthologyModel.findByIdAndDelete(anthologyId)
+        await this._anthologyModel.findByIdAndDelete(anthologyId)
     }
 }
