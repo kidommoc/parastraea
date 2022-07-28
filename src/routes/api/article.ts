@@ -31,7 +31,7 @@ export default (): Router => {
                 }
                 else
                     res.status(500)
-                next(new Error(e.message))
+                next(e)
             }
         }
     )
@@ -67,7 +67,7 @@ export default (): Router => {
                 }
                 else
                     res.status(500)
-                next(new Error(e.message))
+                next(e)
             }
         }
     )
@@ -96,7 +96,7 @@ export default (): Router => {
                 }
                 else
                     res.status(500)
-                next(new Error(e.message))
+                next(e)
             }
         }
     )
@@ -127,7 +127,7 @@ export default (): Router => {
                 }
                 else
                     res.status(500)
-                next(new Error(e.message))
+                next(e)
             }
         }
     )
@@ -151,7 +151,7 @@ export default (): Router => {
                 }
                 else
                     res.status(500)
-                next(new Error(e.message))
+                next(e)
             }
         }
     )

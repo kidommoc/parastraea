@@ -21,7 +21,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
         res.header('Authorization', newToken)
     } catch (e) {
         res.status(401)
-        return next(new Error('Authorization failed!'))
+        return next(e)
     }
     next()
 }

@@ -6,6 +6,7 @@ export class CodedError extends Error {
             Object.setPrototypeOf(this, proto)
         else
             (this as any).__proto__ = proto
+        Error.captureStackTrace(this)
     }
 
     public toString(): string {
