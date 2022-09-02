@@ -1,11 +1,11 @@
 # To-do List
 
-[x] api document
+- [x] api document
 
-[ ] manage page
+- [ ] manage page
 
-[ ] image storage
+- [ ] image storage
 
-[ ] unit test
+- [ ] unit test
 
-[ ] dockerization
+- [ ] dockerization
