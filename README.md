@@ -90,7 +90,7 @@ List template html for example (part of):
         </div>
         <div>
             <h2>Some other article</h2>
-            <p>Author: faith</p>
+            <p>Author: faith&</p>
         </div>
     </div>
     other things ...
