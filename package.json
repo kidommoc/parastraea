@@ -1,6 +1,6 @@
 {
     "name": "parastraea",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "a blog framework",
     "main": "src/main.ts",
     "scripts": {

@@ -45,10 +45,12 @@ export class AuthorizationService {
         } catch (e) {
             throw new Errors.CodedError(ErrTypes.NO_ADMIN, 'No administrator!')
         }
+        // hash secret string
         let hashed = crypto.createHmac('sha256', config.secretText)
             .update(p).digest('hex')
         if (hashed != password)
             throw new Errors.CodedError(ErrTypes.AUTH_FAIL, 'Authorization failed!')
+        // generate auth token for return
         let token = jwt.sign(
             { hello: 'thanks for using Parastraea!' },
             this._jwtSecret,

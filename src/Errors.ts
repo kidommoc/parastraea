@@ -1,5 +1,6 @@
 export class CodedError extends Error {
     constructor(readonly code: number, msg: string) {
+        // copied-pasted code about js inheritance
         super(msg)
         const proto = new.target.prototype
         if (Object.setPrototypeOf)

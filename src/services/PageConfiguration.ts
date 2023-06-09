@@ -94,6 +94,7 @@ export class PageConfigurationService {
     }
 
     public reroute() {
+        // copied-pasted code about express dynamic reroute
         let stack = this._app._router.stack
         let foundLayer = stack.find(function(x) { return '/'.match(x.regexp) && x.name == 'router' })
         let index = stack.indexOf(foundLayer instanceof Array ? foundLayer[0] : foundLayer)
@@ -134,6 +135,7 @@ export class PageConfigurationService {
         return json
     }
 
+    // used in manage page for configuration
     public toString(): string {
         // construct json
         let json = this.toJson()

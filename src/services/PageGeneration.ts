@@ -1,5 +1,4 @@
-import { Service } from 'typedi'
-import { Inject } from 'typedi'
+import { Inject, Service } from 'typedi'
 import * as htmlParser from 'node-html-parser'
 import fs from 'node:fs'
 
@@ -10,13 +9,15 @@ export class PageGenerationService {
     @Inject()
     private _articleServiceInstance: ArticleService
 
-    constructor () {
-    }
+    constructor () { }
 
+    // path: path of page template
     public async generateList(anthology: string, path: string, page: number): Promise<string> {
         let rawText = fs.readFileSync(path, { encoding: 'utf-8' })
         let root = htmlParser.parse(rawText)
         root.removeWhitespace()
+
+        // find list item template
         let listNode = root.querySelector('#parastraea-list')
         let itemTemplate = listNode.firstChild.toString()
         listNode.removeChild(listNode.firstChild)
@@ -35,6 +36,7 @@ export class PageGenerationService {
         return root.outerHTML
     }
 
+    // path: path of page template
     public async generateArticle(title: string, path: string): Promise<string> {
         let rawText = fs.readFileSync(path, { encoding: 'utf-8' })
         let root = htmlParser.parse(rawText)
@@ -43,8 +45,17 @@ export class PageGenerationService {
 
         const article = await this._articleServiceInstance.getArticleContent(title)
         rawText = rawText.replace('@@content@@', article.html)
-        rawText = rawText.replace('@@date@@', new Date(article.date).toLocaleString())
-        article.properties.forEach(p => rawText = rawText.replace(`@@${p.tag}@@`, p.value))
+        rawText = rawText.replace('@@date@@', this.htmlCharCoding(new Date(article.date).toLocaleString()))
+        article.properties.forEach(p => rawText = rawText.replace(`@@${p.tag}@@`, this.htmlCharCoding(p.value)))
         return rawText
+    }
+
+    private htmlCharCoding(s: string) {
+        s.replace('&', '&amp;')
+        s.replace('<', '&lt;')
+        s.replace('>', '&gt;')
+        s.replace('\'', '&apos;')
+        s.replace('"', '&quot;')
+        return s
     }
 }

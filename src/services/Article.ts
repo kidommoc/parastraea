@@ -33,17 +33,23 @@ export class ArticleService {
     private parseContent(rawText: string) {
         let properties = new Types.Map<string>,
             html = ''
+        // looks like `@@tag@@`
         let tagReg = /^@@[A-za-z\-]+@@$/m,
+        // the next line after tag
             valueReg = /^.*$/m
 
         let result = tagReg.exec(rawText)
 
         while (result) {
+            // remove '@@'
             let tag = result[0].slice(2, -2)
+            
+            // have resolved all tags
             if (tag == 'content') {
                 html = md2h5(rawText.slice(result.index + result[0].length + 1))
                 break
             }
+
             let value = valueReg.exec(rawText.slice(result.index + result[0].length + 1))
             if (!value)
                 break
@@ -99,12 +105,13 @@ export class ArticleService {
         }).select({ _id: 1 }).lean()
         if (!anthologyDocument)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
+
         const anthologyId = anthologyDocument._id
         const articleDocuments = await this._articleModel.find({
             anthology: anthologyId
         }).select({ properties: 1, date: 1 }).sort({ date: -1 })
 
-        let articles : { properties: { tag: string, value: string }[], date: Date }[]= []
+        let articles : { properties: { tag: string, value: string }[], date: Date }[] = []
         articleDocuments.forEach(a => {
             let properties: { tag: string, value: string }[] = []
             a.properties.forEach((v: string, k: string) => properties.push({
