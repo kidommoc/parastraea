@@ -21,7 +21,7 @@ export class AuthorizationService {
     constructor() {
         this._jwtSecret = crypto.createHmac('sha256', new Date().getTime().toString())
             .update(config.secretText).digest('hex')
-        this._passwordPath = path.join(config.rootPath, './.secret')
+        this._passwordPath = path.resolve(config.rootPath, '.secret')
     }
 
     public signup(p: string) {

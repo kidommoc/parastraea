@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import { Container } from 'typedi'
 
-import Errors from '@/Errors'
 import { AuthorizationService } from '@/services/Authorization'
 
 export default (req: Request, res: Response, next: NextFunction) => {
-    let authorizationServiceInstance = Container.get(AuthorizationService)
+    let authInst = Container.get(AuthorizationService)
     if (!req.headers.authorization) {
         res.status(401)
         return next(new Error('Authorization failed!'))
@@ -16,7 +15,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
         return next(new Error('Authorization failed!'))
     }
     try {
-        let newToken = authorizationServiceInstance.verify(authHeader[1])
+        let newToken = authInst.verify(authHeader[1])
         res.set('Access-Control-Expose-Headers', 'Authorization')
         res.header('Authorization', newToken)
     } catch (e) {

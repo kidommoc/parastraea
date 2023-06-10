@@ -7,7 +7,7 @@ if (envfound.error) {
 }
 
 process.env.ENV = process.env.ENV || 'development'
-process.env.ROOT_PATH = path.join(path.dirname(require.main.filename), '..')
+process.env.ROOT_PATH = path.resolve(path.dirname(require.main.filename), '..')
 
 export default {
     environment: process.env.ENV,

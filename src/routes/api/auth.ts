@@ -1,25 +1,31 @@
-import { Router, Request, Response, NextFunction } from 'express'
+import {
+    Router,
+    Request as RQ, Response as RS, NextFunction as NF,
+} from 'express'
 import { Container } from 'typedi'
 
 import Errors from '@/Errors'
-import { ErrTypes as AuthorizationErrs, AuthorizationService } from '@/services/Authorization'
+import {
+    AuthorizationService,
+    ErrTypes as AuthErrs,
+} from '@/services/Authorization'
 
 export default (): Router => {
     let app = Router()
-    let authorizationServiceInstance = Container.get(AuthorizationService)
+    let authInst = Container.get(AuthorizationService)
 
     // Login: `POST /api/signup`
     app.post('/signup',
-        (req: Request, res: Response, next: NextFunction) => {
+        (req: RQ, res: RS, next: NF) => {
             // log
             let passwordHashed = req.body.password
             try {
-                authorizationServiceInstance.signup(passwordHashed)
+                authInst.signup(passwordHashed)
                 res.status(200).send()
             } catch (e) {
                 if (e instanceof Errors.CodedError) {
                     switch (e.code) {
-                        case AuthorizationErrs.SIGNUP_FAIL:
+                        case AuthErrs.SIGNUP_FAIL:
                             res.status(499)
                             break
                         default:
@@ -35,11 +41,11 @@ export default (): Router => {
 
     // Login: `POST /api/login`
     app.post('/login',
-        (req: Request, res: Response, next: NextFunction) => {
+        (req: RQ, res: RS, next: NF) => {
             // log
             let passwordHashed = req.body.password
             try {
-                let token = authorizationServiceInstance.login(passwordHashed)
+                let token = authInst.login(passwordHashed)
                 let result = {
                     token: token
                 }
@@ -47,10 +53,10 @@ export default (): Router => {
             } catch (e) {
                 if (e instanceof Errors.CodedError) {
                     switch (e.code) {
-                        case AuthorizationErrs.AUTH_FAIL:
+                        case AuthErrs.AUTH_FAIL:
                             res.status(401)
                             break
-                        case AuthorizationErrs.NO_ADMIN:
+                        case AuthErrs.NO_ADMIN:
                             res.status(499)
                             break
                         default:

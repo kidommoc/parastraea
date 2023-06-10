@@ -28,76 +28,101 @@ export class AnthologyService {
         return false
     }
 
-    public async getAnthologyList() {
+    public async getList() {
         let anthologies: { name: string, size: number }[] = []
-        const anthologyDocuments = await this._anthologyModel.find()
+        const anthologyDocs = await this._anthologyModel.find()
             .select({ name: 1, size: 1 }).lean()
-        if (!anthologyDocuments)
+        if (!anthologyDocs)
             return anthologies
-        anthologyDocuments.forEach(e => anthologies.push({
-            name: e.name,
-            size: e.size
-        }))
+        for (const e of anthologyDocs)
+            anthologies.push({
+                name: e.name,
+                size: e.size
+            })
         return anthologies
     }
 
-    public async getArticleList(anthologyName: string) {
+    public async getArticles(anthology: string) {
         let articles: {
             title: string,
             date: number
         }[] = []
 
-        const anthologyDocument = await this._anthologyModel.findOne({
-            name: anthologyName
+        const anthologyDoc = await this._anthologyModel.findOne({
+            name: anthology
         }).lean()
-        if (!anthologyDocument)
+        if (!anthologyDoc)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
 
-        const anthologyId = anthologyDocument._id
-        const articleDocuments = await this._articleModel.find({
+        const anthologyId = anthologyDoc._id
+        const articleDocs = await this._articleModel.find({
             anthology: anthologyId
         }).lean().sort({ date: -1 })
 
-        if(!articleDocuments)
+        if(!articleDocs)
             return articles
-        articleDocuments.forEach(a => {
+        for (const a of articleDocs)
             articles.push({
                 title: a.title,
                 date: a.date.getTime()
             })
-        })
         return articles
     }
 
-    public async createAnthology(name: string) {
+    public async getArticleProps(anthology: string) {
+        const anthologyDoc = await this._anthologyModel.findOne({
+            name: anthology
+        }).select({ _id: 1 }).lean()
+        if (!anthologyDoc)
+            throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
+
+        const anthologyId = anthologyDoc._id
+        const articleDocs = await this._articleModel.find({
+            anthology: anthologyId
+        }).select({ properties: 1, date: 1 }).sort({ date: -1 })
+
+        let articles : { properties: { tag: string, value: string }[], date: Date }[] = []
+        for (const a of articleDocs) {
+            let properties: { tag: string, value: string }[] = []
+            a.properties.forEach((v: string, k: string) => properties.push({
+                tag: k, value: v
+            }))
+            articles.push({
+                properties: properties, date: a.date
+            })
+        }
+        return articles
+    }
+
+    public async create(name: string) {
         if (!await this.checkName(name))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
-        let newAnthologyDocument = new this._anthologyModel({
+        let newAnthologyDoc = new this._anthologyModel({
             name: name,
             size: 0
         })
-        await newAnthologyDocument.save()
+        await newAnthologyDoc.save()
     }
 
-    public async renameAnthology(oldName: string, newName: string) {
+    public async rename(oldName: string, newName: string) {
         if (!await this.checkName(newName))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicated name!')
-        let anthologyDocument = await this._anthologyModel.findOne({
+        let anthologyDoc = await this._anthologyModel.findOne({
             name: oldName
         })
-        if (!anthologyDocument)
+        if (!anthologyDoc)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
-        anthologyDocument.name = newName
-        await anthologyDocument.save()
+        anthologyDoc.name = newName
+        await anthologyDoc.save()
     }
 
-    public async removeAnthology(name: string, forced: boolean) {
-        let anthologyDocument = await this._anthologyModel.findOne({
+    public async remove(name: string, forced: boolean) {
+        let anthologyDoc = await this._anthologyModel.findOne({
             name: name
         }).lean()
-        if (!anthologyDocument)
+        if (!anthologyDoc)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
-        let anthologyId = anthologyDocument._id
+        let anthologyId = anthologyDoc._id
         let articleCount = await this._articleModel.count({
             anthology: anthologyId
         })

@@ -30,7 +30,7 @@ export class ArticleService {
         return false
     }
 
-    private parseContent(rawText: string) {
+    private parse(rawText: string) {
         let properties = new Types.Map<string>,
             html = ''
         // looks like `@@tag@@`
@@ -64,135 +64,110 @@ export class ArticleService {
         }
     }
 
-    public async getArticleRawText(title: string) {
-        const articleDocument = await this._articleModel.findOne({
+    public async getRaw(title: string) {
+        const articleDoc = await this._articleModel.findOne({
             title: title
         }).select({
             anthology: 1, content: 1, date: 1
         }).lean()
-        if (!articleDocument)
+        if (!articleDoc)
             throw new Errors.CodedError(ErrTypes.NO_ARTICLE, 'No article with this title!')
 
         return {
-            content: articleDocument.content,
-            anthology: articleDocument.anthology,
-            date: articleDocument.date.getTime()
+            content: articleDoc.content,
+            anthology: articleDoc.anthology,
+            date: articleDoc.date.getTime()
         }
     }
 
-    public async getArticleContent(title: string) {
-        const articleDocument = await this._articleModel.findOne({
+    public async getContent(title: string) {
+        const articleDoc = await this._articleModel.findOne({
             title: title
         }).select({ html: 1, properties: 1, date: 1 })
-        if (!articleDocument)
+        if (!articleDoc)
             throw new Errors.CodedError(ErrTypes.NO_ARTICLE, 'No article with this title!')
         
         let properties: { tag: string, value: string }[] = []
-        articleDocument.properties.forEach((v: string, k: string) => properties.push({
+        articleDoc.properties.forEach((v: string, k: string) => properties.push({
             tag: k, value: v
         }))
 
         return {
-            html: articleDocument.html,
+            html: articleDoc.html,
             properties: properties,
-            date: articleDocument.date.getTime()
+            date: articleDoc.date.getTime()
         }
     }
 
-    public async getArticlePropertiesOfAnthology(anthology: string) {
-        const anthologyDocument = await this._anthologyModel.findOne({
-            name: anthology
-        }).select({ _id: 1 }).lean()
-        if (!anthologyDocument)
-            throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
-
-        const anthologyId = anthologyDocument._id
-        const articleDocuments = await this._articleModel.find({
-            anthology: anthologyId
-        }).select({ properties: 1, date: 1 }).sort({ date: -1 })
-
-        let articles : { properties: { tag: string, value: string }[], date: Date }[] = []
-        articleDocuments.forEach(a => {
-            let properties: { tag: string, value: string }[] = []
-            a.properties.forEach((v: string, k: string) => properties.push({
-                tag: k, value: v
-            }))
-            articles.push({
-                properties: properties, date: a.date
-            })
-        })
-        return articles
-    }
-
-    public async createArticle(title: string, anthology: string, content: string) {
+    public async create(title: string, anthology: string, content: string) {
         if (!await this.checkTitle(title))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicate name!')
-        const anthologyDocument = await this._anthologyModel.findOne({
+        const anthologyDoc = await this._anthologyModel.findOne({
             name: anthology
         })
-        if (!anthologyDocument)
+        if (!anthologyDoc)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
-        let parsed = this.parseContent(content)
-        let articleDocument = new this._articleModel({
+        let parsed = this.parse(content)
+        let articleDoc = new this._articleModel({
             title: title,
-            anthology: anthologyDocument._id,
+            anthology: anthologyDoc._id,
             content: content,
             html: parsed.html,
             properties: parsed.properties
         })
-        ++anthologyDocument.size
+        ++anthologyDoc.size
         // will use transaction in future
-        await articleDocument.save()
-        await anthologyDocument.save()
+        await articleDoc.save()
+        await anthologyDoc.save()
     }
 
-    public async editArticle(title: string, newTitle: string, content: string) {
+    public async edit(title: string, newTitle: string, content: string) {
         if (!await this.checkTitle(newTitle))
             throw new Errors.CodedError(ErrTypes.DUMP_NAME, 'Dumplicate name!')
-        let parsed = this.parseContent(content)
-        let articleDocument = await this._articleModel.findOne({
+        let parsed = this.parse(content)
+        let articleDoc = await this._articleModel.findOne({
             title: title
         })
-        if (!articleDocument)
+        if (!articleDoc)
             throw new Errors.CodedError(ErrTypes.NO_ARTICLE, 'No article with this title!')
-        articleDocument.title = newTitle
-        articleDocument.content = content
-        articleDocument.html = parsed.html
-        articleDocument.properties = parsed.properties
-        await articleDocument.save()
+        articleDoc.title = newTitle
+        articleDoc.content = content
+        articleDoc.html = parsed.html
+        articleDoc.properties = parsed.properties
+        await articleDoc.save()
     }
 
-    public async changeAnthology(title: string, anthology: string) {
-        let articleDocument = await this._articleModel.findOne({
+    public async move(title: string, anthology: string) {
+        let articleDoc = await this._articleModel.findOne({
             title: title
         })
-        if (!articleDocument)
+        if (!articleDoc)
             throw new Errors.CodedError(ErrTypes.NO_ARTICLE, 'No article with this title!')
-        let oldAnthologyDocument = await this._anthologyModel
-            .findById(articleDocument.anthology)
-        let newAnthologyDocument = await this._anthologyModel.findOne({
+        let oldAnthologyDoc = await this._anthologyModel
+            .findById(articleDoc.anthology)
+        let newAnthologyDoc = await this._anthologyModel.findOne({
             name: anthology
         })
-        if (!newAnthologyDocument)
+        if (!newAnthologyDoc)
             throw new Errors.CodedError(ErrTypes.NO_ANTHOLOGY, 'No anthology with this name!')
         // will use transaction in future
-        articleDocument.anthology = newAnthologyDocument._id
-        --oldAnthologyDocument.size
-        ++newAnthologyDocument.size
-        await articleDocument.save()
-        await oldAnthologyDocument.save()
-        await newAnthologyDocument.save()
+        articleDoc.anthology = newAnthologyDoc._id
+        --oldAnthologyDoc.size
+        ++newAnthologyDoc.size
+        await articleDoc.save()
+        await oldAnthologyDoc.save()
+        await newAnthologyDoc.save()
     }
 
-    public async removeArticle(title: string) {
-        let articleDocument = await this._articleModel.findOne({
+    public async remove(title: string) {
+        let articleDoc = await this._articleModel.findOne({
             title: title
         })
-        if (articleDocument) {
-            let anthologyDocument = await this._anthologyModel
-                .findById(articleDocument.anthology)
-            --anthologyDocument.size
-            await anthologyDocument.save()
+        if (articleDoc) {
+            let anthologyDoc = await this._anthologyModel
+                .findById(articleDoc.anthology)
+            --anthologyDoc.size
+            await anthologyDoc.save()
         }
         await this._articleModel.deleteOne({
             title: title

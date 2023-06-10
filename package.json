@@ -1,7 +1,10 @@
 {
     "name": "parastraea",
-    "version": "0.5.1",
+    "version": "0.6.0",
     "description": "a blog framework",
+    "author": "kidommoc",
+    "license": "MIT",
+    "homepage": "https://github.com/KidomMoc/parastraea#readme",
     "main": "src/main.ts",
     "scripts": {
         "build": "tsc --build && tsc-alias",
@@ -9,16 +12,6 @@
         "debug": "npm run build && npm run start",
         "start": "node dist/main.js"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/KidomMoc/parastraea.git"
-    },
-    "author": "kidommoc",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/KidomMoc/parastraea/issues"
-    },
-    "homepage": "https://github.com/KidomMoc/parastraea#readme",
     "dependencies": {
         "cors": "^2.8.5",
         "dotenv": "^16.0.1",
